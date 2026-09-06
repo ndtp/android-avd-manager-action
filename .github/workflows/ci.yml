@@ -57,8 +57,11 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          api-level: 35
+          target: google_apis
+          arch: x86_64
 
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+      - name: Verify AVD was created
+        id: verify-avd
+        run: |
+          avdmanager list avd | grep -q 'Name: test'
