@@ -8,13 +8,13 @@
 
 GitHub Action to create an Android Virtual Device.
 
-# Citations
+## Citations
 
 Portions of this are copyright of the original authors of
-https://github.com/ReactiveCircus/android-emulator-runner, licensed under
+<https://github.com/ReactiveCircus/android-emulator-runner>, licensed under
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-# License
+## License
 
 MIT License
 
