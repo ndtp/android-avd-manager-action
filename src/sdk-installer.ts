@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 
 // SDK command-line tools 16.0
 const CMDLINE_TOOLS_URL_MAC =

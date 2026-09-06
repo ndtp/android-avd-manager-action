@@ -1,5 +1,5 @@
 import * as exec from '@actions/exec'
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 
 /**
  * Creates a new AVD instance with the specified configurations.
