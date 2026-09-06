@@ -2,9 +2,8 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as tc from '@actions/tool-cache'
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 
-const BUILD_TOOLS_VERSION = '35.0.0'
 // SDK command-line tools 16.0
 const CMDLINE_TOOLS_URL_MAC =
   'https://dl.google.com/android/repository/commandlinetools-mac-12266719_latest.zip'
@@ -12,7 +11,7 @@ const CMDLINE_TOOLS_URL_LINUX =
   'https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip'
 
 /**
- * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, latest build tools, platform tools, Android Emulator,
+ * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, the chosen build tools, platform tools, Android Emulator,
  * and the system image for the chosen API level, CPU arch, and target.
  */
 export async function installAndroidSdk(
@@ -21,6 +20,7 @@ export async function installAndroidSdk(
   target: string,
   arch: string,
   channelId: number,
+  buildToolsVersion: string,
   emulatorBuild?: string,
   ndkVersion?: string,
   cmakeVersion?: string
@@ -54,10 +54,12 @@ export async function installAndroidSdk(
     // accept all Android SDK licenses
     await exec.exec(`sh -c \\"yes | sdkmanager --licenses > /dev/null"`)
 
-    console.log('Installing latest build tools, platform tools, and platform.')
+    console.log(
+      `Installing build tools ${buildToolsVersion}, platform tools, and platform.`
+    )
 
     await exec.exec(
-      `sh -c \\"sdkmanager --install 'build-tools;${BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-${apiLevel}'> /dev/null"`
+      `sh -c \\"sdkmanager --install 'build-tools;${buildToolsVersion}' platform-tools 'platforms;android-${apiLevel}'> /dev/null"`
     )
 
     console.log('Installing latest emulator.')

@@ -1,7 +1,6 @@
 import require$$0 from 'os';
 import require$$0$1 from 'crypto';
-import * as require$$1 from 'fs';
-import require$$1__default from 'fs';
+import require$$1 from 'fs';
 import require$$1$5 from 'path';
 import require$$2 from 'http';
 import require$$3 from 'https';
@@ -28,6 +27,7 @@ import require$$6 from 'string_decoder';
 import require$$0$9 from 'diagnostics_channel';
 import require$$2$2 from 'child_process';
 import require$$6$1 from 'timers';
+import * as fs from 'node:fs';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -223,7 +223,7 @@ function requireFileCommand () {
 	// We use any as a valid input type
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	const crypto = __importStar(require$$0$1);
-	const fs = __importStar(require$$1__default);
+	const fs = __importStar(require$$1);
 	const os = __importStar(require$$0);
 	const utils_1 = requireUtils$1();
 	function issueFileCommand(command, message) {
@@ -25201,7 +25201,7 @@ function requireSummary () {
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.summary = exports.markdownSummary = exports.SUMMARY_DOCS_URL = exports.SUMMARY_ENV_VAR = void 0;
 		const os_1 = require$$0;
-		const fs_1 = require$$1__default;
+		const fs_1 = require$$1;
 		const { access, appendFile, writeFile } = fs_1.promises;
 		exports.SUMMARY_ENV_VAR = 'GITHUB_STEP_SUMMARY';
 		exports.SUMMARY_DOCS_URL = 'https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary';
@@ -25593,7 +25593,7 @@ function requireIoUtil () {
 		var _a;
 		Object.defineProperty(exports, "__esModule", { value: true });
 		exports.getCmdPath = exports.tryGetExecutablePath = exports.isRooted = exports.isDirectory = exports.exists = exports.READONLY = exports.UV_FS_O_EXLOCK = exports.IS_WINDOWS = exports.unlink = exports.symlink = exports.stat = exports.rmdir = exports.rm = exports.rename = exports.readlink = exports.readdir = exports.open = exports.mkdir = exports.lstat = exports.copyFile = exports.chmod = void 0;
-		const fs = __importStar(require$$1__default);
+		const fs = __importStar(require$$1);
 		const path = __importStar(require$$1$5);
 		_a = fs.promises
 		// export const {open} = 'fs'
@@ -28958,7 +28958,7 @@ function requireManifest () {
 		/* eslint @typescript-eslint/no-require-imports: 0 */
 		const os = require$$0;
 		const cp = require$$2$2;
-		const fs = require$$1__default;
+		const fs = require$$1;
 		function _findMatch(versionSpec, stable, candidates, archFilter) {
 		    return __awaiter(this, void 0, void 0, function* () {
 		        const platFilter = os.platform();
@@ -29188,7 +29188,7 @@ function requireToolCache () {
 	const core = __importStar(requireCore());
 	const io = __importStar(requireIo());
 	const crypto = __importStar(require$$0$1);
-	const fs = __importStar(require$$1__default);
+	const fs = __importStar(require$$1);
 	const mm = __importStar(requireManifest());
 	const os = __importStar(require$$0);
 	const path = __importStar(require$$1$5);
@@ -29821,21 +29821,20 @@ function requireToolCache () {
 
 var toolCacheExports = requireToolCache();
 
-const BUILD_TOOLS_VERSION = '35.0.0';
 // SDK command-line tools 16.0
 const CMDLINE_TOOLS_URL_MAC = 'https://dl.google.com/android/repository/commandlinetools-mac-12266719_latest.zip';
 const CMDLINE_TOOLS_URL_LINUX = 'https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip';
 /**
- * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, latest build tools, platform tools, Android Emulator,
+ * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, the chosen build tools, platform tools, Android Emulator,
  * and the system image for the chosen API level, CPU arch, and target.
  */
-async function installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, emulatorBuild, ndkVersion, cmakeVersion) {
+async function installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, buildToolsVersion, emulatorBuild, ndkVersion, cmakeVersion) {
     try {
         console.log(`::group::Install Android SDK`);
         const isOnMac = process.platform === 'darwin';
         const isArm = process.arch === 'arm64';
         const cmdlineToolsPath = `${process.env.ANDROID_HOME}/cmdline-tools`;
-        if (!require$$1.existsSync(cmdlineToolsPath)) {
+        if (!fs.existsSync(cmdlineToolsPath)) {
             console.log('Installing new cmdline-tools.');
             const sdkUrl = isOnMac ? CMDLINE_TOOLS_URL_MAC : CMDLINE_TOOLS_URL_LINUX;
             const downloadPath = await toolCacheExports.downloadTool(sdkUrl);
@@ -29849,8 +29848,8 @@ async function installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, ch
         coreExports.exportVariable('ANDROID_AVD_HOME', `${process.env.HOME}/.android/avd`);
         // accept all Android SDK licenses
         await execExports.exec(`sh -c \\"yes | sdkmanager --licenses > /dev/null"`);
-        console.log('Installing latest build tools, platform tools, and platform.');
-        await execExports.exec(`sh -c \\"sdkmanager --install 'build-tools;${BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-${apiLevel}'> /dev/null"`);
+        console.log(`Installing build tools ${buildToolsVersion}, platform tools, and platform.`);
+        await execExports.exec(`sh -c \\"sdkmanager --install 'build-tools;${buildToolsVersion}' platform-tools 'platforms;android-${apiLevel}'> /dev/null"`);
         console.log('Installing latest emulator.');
         await execExports.exec(`sh -c \\"sdkmanager --install emulator --channel=${channelId} > /dev/null"`);
         if (emulatorBuild) {
@@ -29961,7 +29960,7 @@ async function createAvd(arch, avdName, cores, diskSize, enableHardwareKeyboard,
         console.log(`::group::Create AVD`);
         // create a new AVD if AVD directory does not already exist or forceAvdCreation is true
         const avdPath = `${process.env.ANDROID_AVD_HOME}/${avdName}.avd`;
-        if (!require$$1.existsSync(avdPath) || forceAvdCreation) {
+        if (!fs.existsSync(avdPath) || forceAvdCreation) {
             const profileOption = profile.trim() !== '' ? `--device '${profile}'` : '';
             const sdcardPathOrSizeOption = sdcardPathOrSize.trim() !== '' ? `--sdcard '${sdcardPathOrSize}'` : '';
             console.log(`Creating AVD.`);
@@ -30074,6 +30073,9 @@ async function run() {
             console.log(`using emulator build: ${emulatorBuildInput}`);
         }
         const emulatorBuild = !emulatorBuildInput ? undefined : emulatorBuildInput;
+        // version of the SDK build-tools to install
+        const buildToolsVersion = coreExports.getInput('build-tools');
+        console.log(`Build tools version: ${buildToolsVersion}`);
         // version of NDK to install
         const ndkInput = coreExports.getInput('ndk');
         if (ndkInput) {
@@ -30093,7 +30095,7 @@ async function run() {
         console.log(`Channel: ${channelId} (${channelName})`);
         console.log(`::endgroup::`);
         // install SDK
-        await installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, emulatorBuild, ndkVersion, cmakeVersion);
+        await installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, buildToolsVersion, emulatorBuild, ndkVersion, cmakeVersion);
         // create AVD
         await createAvd(arch, avdName, cores, diskSize, enableHardwareKeyboard, forceAvdCreation, heapSize, profile, ramSize, sdcardPathOrSize, systemImageApiLevel, target);
     }
