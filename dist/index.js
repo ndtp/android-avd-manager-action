@@ -29821,15 +29821,14 @@ function requireToolCache () {
 
 var toolCacheExports = requireToolCache();
 
-const BUILD_TOOLS_VERSION = '35.0.0';
 // SDK command-line tools 16.0
 const CMDLINE_TOOLS_URL_MAC = 'https://dl.google.com/android/repository/commandlinetools-mac-12266719_latest.zip';
 const CMDLINE_TOOLS_URL_LINUX = 'https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip';
 /**
- * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, latest build tools, platform tools, Android Emulator,
+ * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, the chosen build tools, platform tools, Android Emulator,
  * and the system image for the chosen API level, CPU arch, and target.
  */
-async function installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, emulatorBuild, ndkVersion, cmakeVersion) {
+async function installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, buildToolsVersion, emulatorBuild, ndkVersion, cmakeVersion) {
     try {
         console.log(`::group::Install Android SDK`);
         const isOnMac = process.platform === 'darwin';
@@ -29849,8 +29848,8 @@ async function installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, ch
         coreExports.exportVariable('ANDROID_AVD_HOME', `${process.env.HOME}/.android/avd`);
         // accept all Android SDK licenses
         await execExports.exec(`sh -c \\"yes | sdkmanager --licenses > /dev/null"`);
-        console.log('Installing latest build tools, platform tools, and platform.');
-        await execExports.exec(`sh -c \\"sdkmanager --install 'build-tools;${BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-${apiLevel}'> /dev/null"`);
+        console.log(`Installing build tools ${buildToolsVersion}, platform tools, and platform.`);
+        await execExports.exec(`sh -c \\"sdkmanager --install 'build-tools;${buildToolsVersion}' platform-tools 'platforms;android-${apiLevel}'> /dev/null"`);
         console.log('Installing latest emulator.');
         await execExports.exec(`sh -c \\"sdkmanager --install emulator --channel=${channelId} > /dev/null"`);
         if (emulatorBuild) {
@@ -30074,6 +30073,9 @@ async function run() {
             console.log(`using emulator build: ${emulatorBuildInput}`);
         }
         const emulatorBuild = !emulatorBuildInput ? undefined : emulatorBuildInput;
+        // version of the SDK build-tools to install
+        const buildToolsVersion = coreExports.getInput('build-tools');
+        console.log(`Build tools version: ${buildToolsVersion}`);
         // version of NDK to install
         const ndkInput = coreExports.getInput('ndk');
         if (ndkInput) {
@@ -30093,7 +30095,7 @@ async function run() {
         console.log(`Channel: ${channelId} (${channelName})`);
         console.log(`::endgroup::`);
         // install SDK
-        await installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, emulatorBuild, ndkVersion, cmakeVersion);
+        await installAndroidSdk(apiLevel, systemImageApiLevel, target, arch, channelId, buildToolsVersion, emulatorBuild, ndkVersion, cmakeVersion);
         // create AVD
         await createAvd(arch, avdName, cores, diskSize, enableHardwareKeyboard, forceAvdCreation, heapSize, profile, ramSize, sdcardPathOrSize, systemImageApiLevel, target);
     }

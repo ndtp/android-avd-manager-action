@@ -58,6 +58,8 @@ inputs:
     type: string
   working-directory:
     type: string
+  build-tools:
+    type: string
   ndk:
     type: string
   cmake:

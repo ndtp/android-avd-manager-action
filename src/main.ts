@@ -88,6 +88,10 @@ export async function run(): Promise<void> {
     }
     const emulatorBuild = !emulatorBuildInput ? undefined : emulatorBuildInput
 
+    // version of the SDK build-tools to install
+    const buildToolsVersion = core.getInput('build-tools')
+    console.log(`Build tools version: ${buildToolsVersion}`)
+
     // version of NDK to install
     const ndkInput = core.getInput('ndk')
     if (ndkInput) {
@@ -117,6 +121,7 @@ export async function run(): Promise<void> {
       target,
       arch,
       channelId,
+      buildToolsVersion,
       emulatorBuild,
       ndkVersion,
       cmakeVersion
