@@ -1,9 +1,10 @@
 # GitHub Action to Create an Android Emulator AVD
 
-[![GitHub Super-Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
-[![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml)
-[![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml)
+[![Lint Codebase](https://github.com/ndtp/android-avd-manager-action/actions/workflows/linter.yml/badge.svg)](https://github.com/ndtp/android-avd-manager-action/actions/workflows/linter.yml)
+[![Continuous Integration](https://github.com/ndtp/android-avd-manager-action/actions/workflows/ci.yml/badge.svg)](https://github.com/ndtp/android-avd-manager-action/actions/workflows/ci.yml)
+[![Check Transpiled JavaScript](https://github.com/ndtp/android-avd-manager-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/ndtp/android-avd-manager-action/actions/workflows/check-dist.yml)
+[![CodeQL](https://github.com/ndtp/android-avd-manager-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ndtp/android-avd-manager-action/actions/workflows/codeql-analysis.yml)
+[![Licensed](https://github.com/ndtp/android-avd-manager-action/actions/workflows/licensed.yml/badge.svg)](https://github.com/ndtp/android-avd-manager-action/actions/workflows/licensed.yml)
 [![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
 GitHub Action to create an Android Virtual Device.
