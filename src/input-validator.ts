@@ -12,6 +12,14 @@ export function playstoreTargetSubstitution(target: string): string {
   return target
 }
 
+export function systemImageTag(target: string): string {
+  // 16 KB page-size images ship under their own package path, e.g.
+  // `system-images;android-37.0;google_apis_ps16k;x86_64`, but they carry the
+  // tag of the image they are built from. `avdmanager --abi` wants that tag,
+  // not the package path, so drop the suffix.
+  return target.replace(/_ps16k$/, '')
+}
+
 export function checkArch(arch: string): void {
   if (!VALID_ARCHS.includes(arch)) {
     throw new Error(
