@@ -29902,6 +29902,13 @@ function playstoreTargetSubstitution(target) {
         return 'google_apis_playstore_ps16k';
     return target;
 }
+function systemImageTag(target) {
+    // 16 KB page-size images ship under their own package path, e.g.
+    // `system-images;android-37.0;google_apis_ps16k;x86_64`, but they carry the
+    // tag of the image they are built from. `avdmanager --abi` wants that tag,
+    // not the package path, so drop the suffix.
+    return target.replace(/_ps16k$/, '');
+}
 function checkArch(arch) {
     if (!VALID_ARCHS.includes(arch)) {
         throw new Error(`Value for input.arch '${arch}' is unknown. Supported options: ${VALID_ARCHS}.`);
@@ -29964,7 +29971,7 @@ async function createAvd(arch, avdName, cores, diskSize, enableHardwareKeyboard,
             const profileOption = profile.trim() !== '' ? `--device '${profile}'` : '';
             const sdcardPathOrSizeOption = sdcardPathOrSize.trim() !== '' ? `--sdcard '${sdcardPathOrSize}'` : '';
             console.log(`Creating AVD.`);
-            await execExports.exec(`sh -c \\"echo no | avdmanager create avd --force -n "${avdName}" --abi '${target}/${arch}' --package 'system-images;android-${systemImageApiLevel};${target};${arch}' ${profileOption} ${sdcardPathOrSizeOption}"`);
+            await execExports.exec(`sh -c \\"echo no | avdmanager create avd --force -n "${avdName}" --abi '${systemImageTag(target)}/${arch}' --package 'system-images;android-${systemImageApiLevel};${target};${arch}' ${profileOption} ${sdcardPathOrSizeOption}"`);
         }
         if (cores || ramSize || heapSize || enableHardwareKeyboard || diskSize) {
             const configEntries = [];

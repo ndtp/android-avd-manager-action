@@ -1,5 +1,6 @@
 import * as exec from '@actions/exec'
 import * as fs from 'node:fs'
+import { systemImageTag } from './input-validator.js'
 
 /**
  * Creates a new AVD instance with the specified configurations.
@@ -28,7 +29,7 @@ export async function createAvd(
         sdcardPathOrSize.trim() !== '' ? `--sdcard '${sdcardPathOrSize}'` : ''
       console.log(`Creating AVD.`)
       await exec.exec(
-        `sh -c \\"echo no | avdmanager create avd --force -n "${avdName}" --abi '${target}/${arch}' --package 'system-images;android-${systemImageApiLevel};${target};${arch}' ${profileOption} ${sdcardPathOrSizeOption}"`
+        `sh -c \\"echo no | avdmanager create avd --force -n "${avdName}" --abi '${systemImageTag(target)}/${arch}' --package 'system-images;android-${systemImageApiLevel};${target};${arch}' ${profileOption} ${sdcardPathOrSizeOption}"`
       )
     }
 
